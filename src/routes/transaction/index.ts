@@ -65,15 +65,6 @@ export default async function (
     const world = await getWorldFromToken(world_token);
     const user = await getUserFromUuid(userUuid);
     const job = await getJobFromId(jobId);
-    if (!user) {
-      const token = generateToken();
-      const name = await getUsernameFromUuid(userUuid);
-      await db.insert(users).values({
-        uuid: userUuid,
-        name: name,
-        token: token,
-      });
-    }
     if (!world) {
       return reply
         .status(400)
@@ -83,6 +74,15 @@ export default async function (
       return reply
         .status(400)
         .send({ success: false, error: `World not verified` });
+    }
+    if (!user) {
+      const token = generateToken();
+      const name = await getUsernameFromUuid(userUuid);
+      await db.insert(users).values({
+        uuid: userUuid,
+        name: name,
+        token: token,
+      });
     }
     if (!job) {
       return reply.status(400).send({ success: false, error: `Job not found` });
